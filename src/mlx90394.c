@@ -22,24 +22,94 @@
 #define DBG_COLOR
 #include <rtdbg.h>
 
-#define CRC8_POLYNOMIAL 0x2F
+#define POLY 0x2F // # 0x197 = x^8 + x^7 + x^4 + x^2 + x^1 +1  (0x97 -> 0x197)
 
-rt_uint8_t cal_bytes_crc8(uint8_t *data, uint8_t len)
+unsigned char Slow_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buffer)
 {
-    rt_uint8_t crc8 = 0x00; // 初始CRC值
-    rt_uint8_t i;
+  int i;
 
-    while (len--)
+  while(Size--)
+  {
+//    LOG_I("Buf = 0x%x\r\n", *Buffer);
+
+    crc = crc ^ *Buffer++; // Apply Byte
+
+    for(i=0; i<8; i++) // Eight rounds of 1-bit
     {
-        crc8 ^= *data++; // 与数据进行异或
-
-        for (i = 8; i > 0; --i)
-        {
-            crc8 = (crc8 & 0x80) ? (crc8 << 1) ^ CRC8_POLYNOMIAL : (crc8 << 1);
-        }
+      if (crc & 0x80)
+        crc = (crc << 1) ^ POLY;
+      else
+        crc = (crc << 1); // Left Shifting
     }
+  }
 
-    return crc8;
+//  LOG_I("CRC = 0x%x\r\n", crc);
+
+  return(crc);
+}
+
+unsigned char Quick_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buffer)
+{
+  static const unsigned char CrcTable[] = {
+    0x00,0x97,0xB9,0x2E,0xE5,0x72,0x5C,0xCB, // 0x97 Polynomial Table, 4-bit, sourcer32@gmail.com
+    0x5D,0xCA,0xE4,0x73,0xB8,0x2F,0x01,0x96 };
+
+
+  while(Size--)
+  {
+    crc = crc ^ *Buffer++; // Apply Byte
+
+    crc = (crc << 4) ^ CrcTable[(crc >> 4) & 0xF]; // Two rounds of 4-bits
+    crc = (crc << 4) ^ CrcTable[(crc >> 4) & 0xF];
+  }
+
+  return(crc);
+}
+
+unsigned char Fast_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buffer)
+{
+  static const unsigned char CrcTable[] = { // 0x97 Polynomial Table, 8-bit, sourcer32@gmail.com
+    0x00,0x97,0xB9,0x2E,0xE5,0x72,0x5C,0xCB,
+    0x5D,0xCA,0xE4,0x73,0xB8,0x2F,0x01,0x96,
+    0xBA,0x2D,0x03,0x94,0x5F,0xC8,0xE6,0x71,
+    0xE7,0x70,0x5E,0xC9,0x02,0x95,0xBB,0x2C,
+    0xE3,0x74,0x5A,0xCD,0x06,0x91,0xBF,0x28,
+    0xBE,0x29,0x07,0x90,0x5B,0xCC,0xE2,0x75,
+    0x59,0xCE,0xE0,0x77,0xBC,0x2B,0x05,0x92,
+    0x04,0x93,0xBD,0x2A,0xE1,0x76,0x58,0xCF,
+    0x51,0xC6,0xE8,0x7F,0xB4,0x23,0x0D,0x9A,
+    0x0C,0x9B,0xB5,0x22,0xE9,0x7E,0x50,0xC7,
+    0xEB,0x7C,0x52,0xC5,0x0E,0x99,0xB7,0x20,
+    0xB6,0x21,0x0F,0x98,0x53,0xC4,0xEA,0x7D,
+    0xB2,0x25,0x0B,0x9C,0x57,0xC0,0xEE,0x79,
+    0xEF,0x78,0x56,0xC1,0x0A,0x9D,0xB3,0x24,
+    0x08,0x9F,0xB1,0x26,0xED,0x7A,0x54,0xC3,
+    0x55,0xC2,0xEC,0x7B,0xB0,0x27,0x09,0x9E,
+    0xA2,0x35,0x1B,0x8C,0x47,0xD0,0xFE,0x69,
+    0xFF,0x68,0x46,0xD1,0x1A,0x8D,0xA3,0x34,
+    0x18,0x8F,0xA1,0x36,0xFD,0x6A,0x44,0xD3,
+    0x45,0xD2,0xFC,0x6B,0xA0,0x37,0x19,0x8E,
+    0x41,0xD6,0xF8,0x6F,0xA4,0x33,0x1D,0x8A,
+    0x1C,0x8B,0xA5,0x32,0xF9,0x6E,0x40,0xD7,
+    0xFB,0x6C,0x42,0xD5,0x1E,0x89,0xA7,0x30,
+    0xA6,0x31,0x1F,0x88,0x43,0xD4,0xFA,0x6D,
+    0xF3,0x64,0x4A,0xDD,0x16,0x81,0xAF,0x38,
+    0xAE,0x39,0x17,0x80,0x4B,0xDC,0xF2,0x65,
+    0x49,0xDE,0xF0,0x67,0xAC,0x3B,0x15,0x82,
+    0x14,0x83,0xAD,0x3A,0xF1,0x66,0x48,0xDF,
+    0x10,0x87,0xA9,0x3E,0xF5,0x62,0x4C,0xDB,
+    0x4D,0xDA,0xF4,0x63,0xA8,0x3F,0x11,0x86,
+    0xAA,0x3D,0x13,0x84,0x4F,0xD8,0xF6,0x61,
+    0xF7,0x60,0x4E,0xD9,0x12,0x85,0xAB,0x3C };
+
+  while(Size--)
+  {
+    crc = crc ^ *Buffer++; // Apply Byte
+
+    crc = CrcTable[crc & 0xFF]; // One round of 8-bits
+  }
+
+  return(crc);
 }
 
 /**
@@ -92,46 +162,9 @@ static rt_err_t mlx90394_mem_direct_read(struct mlx90394_device *dev, rt_uint8_t
 static rt_err_t mlx90394_mem_read(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
 {
     rt_err_t res = RT_EOK;
-    rt_uint8_t send_buf[5] = {(dev->i2c_addr)<<1, 0x80, 0x50, start_addr, 0xE7};
+    rt_uint8_t send_buf[5] = {dev->i2c_addr << 1, 0x80, 0x50, start_addr, 0xE7};
 
-    send_buf[4] = cal_bytes_crc8(send_buf, 4);
-
-    if (dev->bus->type == RT_Device_Class_I2CBUS)
-    {
-#ifdef RT_USING_I2C
-        struct rt_i2c_msg msgs[2];
-
-        msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
-        msgs[0].flags = RT_I2C_WR;        /* Write flag */
-        msgs[0].buf   = &send_buf[1];     /* Write data pointer */
-        msgs[0].len   = 4;                /* Number of bytes write */
-
-        msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
-        msgs[1].flags = RT_I2C_RD;        /* Read flag */
-        msgs[1].buf   = recv_buf;         /* Read data pointer */
-        msgs[1].len   = recv_len;         /* Number of bytes read */
-
-        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
-        {
-            res = RT_EOK;
-        }
-        else
-        {
-            LOG_E("rt_i2c_transfer error\r\n");
-            res = -RT_ERROR;
-        }
-#endif
-    }
-
-    return res;
-}
-
-static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
-{
-    rt_err_t res = RT_EOK;
-    rt_uint8_t send_buf[5] = {(dev->i2c_addr)<<1, 0x80, 0x50, start_addr, 0xE7};
-
-    send_buf[4] = cal_bytes_crc8(send_buf, 4);
+    send_buf[4] = Slow_CRC_Cal8Bits(0x00, 4, send_buf);
 
     if (dev->bus->type == RT_Device_Class_I2CBUS)
     {
@@ -140,7 +173,7 @@ static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t s
 
         msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
         msgs[0].flags = RT_I2C_WR;        /* Write flag */
-        msgs[0].buf   = &send_buf[1];     /* Write data pointer */
+        msgs[0].buf   = &send_buf[1];        /* Write data pointer */
         msgs[0].len   = 4;                /* Number of bytes write */
 
         msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
@@ -149,38 +182,6 @@ static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t s
         msgs[1].len   = recv_len;         /* Number of bytes read */
 
         if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
-        {
-            res = RT_EOK;
-        }
-        else
-        {
-            LOG_E("rt_i2c_transfer error\r\n");
-            res = -RT_ERROR;
-        }
-#endif
-    }
-
-    return res;
-}
-
-static rt_err_t mlx90394_write_register(struct mlx90394_device *dev, rt_uint8_t reg, rt_uint16_t data)
-{
-    rt_err_t res = RT_EOK;
-    rt_uint8_t send_buf[] = {dev->i2c_addr<<1, 0x80, 0x60, reg, (data&0xFF00)>>8, data&0xFF, 0x00};
-
-    send_buf[6] = cal_bytes_crc8(send_buf, 6);
-
-    if (dev->bus->type == RT_Device_Class_I2CBUS)
-    {
-#ifdef RT_USING_I2C
-        struct rt_i2c_msg msgs;
-
-        msgs.addr  = dev->i2c_addr;    /* I2C Slave address */
-        msgs.flags = RT_I2C_WR;        /* Read flag */
-        msgs.buf   = send_buf;         /* Read data pointer */
-        msgs.len   = sizeof(send_buf); /* Number of bytes read */
-
-        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, &msgs, 1) == 1)
         {
             res = RT_EOK;
         }
@@ -232,6 +233,336 @@ static rt_err_t mlx90394_mem_write(struct mlx90394_device *dev, rt_uint8_t *send
     }
 
     return res;
+}
+
+static rt_err_t mlx90396_set_mode(struct mlx90394_device *dev, union mlx90396_cmd_byte cmd)
+{
+    rt_err_t res = RT_EOK;
+    rt_uint8_t recv_buf[] = {0x00, 0x00};
+//    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, 0x12, 0x49, 0x00, 0x00};
+
+//    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, cmd.cmd_byte1.byte_val, cmd.cmd_byte2.byte_val, cmd.cmd_byte3.byte_val, 0x00};
+    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, cmd.cmd_byte4, cmd.cmd_byte3, cmd.cmd_byte2, cmd.cmd_byte1};
+
+    send_buf[5] = Slow_CRC_Cal8Bits(0x00, 5, send_buf);
+
+    if (dev->bus->type == RT_Device_Class_I2CBUS)
+    {
+#ifdef RT_USING_I2C
+        struct rt_i2c_msg msgs[2];
+
+        msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[0].flags = RT_I2C_WR;        /* Write flag */
+        msgs[0].buf   = &send_buf[1];     /* Write data pointer */
+        msgs[0].len   = 5;                /* Number of bytes write */
+
+        msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[1].flags = RT_I2C_RD;        /* Read flag */
+        msgs[1].buf   = recv_buf;         /* Read data pointer */
+        msgs[1].len   = 2;                /* Number of bytes read */
+
+        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
+        {
+            res = RT_EOK;
+
+            union mlx90396_status status;
+            status.byte_val = recv_buf[0];
+
+            LOG_I("status = 0x%x\r\n", status);
+            LOG_I("drdy = 0x%x,  error = 0x%x, infor_warn = 0x%x, counter = 0x%x, function_id = 0x%x\r\n", status.drdy, status.error, status.info_warn, status.measurement_counter, status.function_id);
+
+            LOG_I("recv_buff[0] = 0x%x, recv_buff[1] = 0x%x\r\n", recv_buf[0], recv_buf[1]);
+        }
+        else
+        {
+            LOG_E("rt_i2c_transfer error\r\n");
+            res = -RT_ERROR;
+        }
+#endif
+    }
+
+    return res;
+}
+
+static rt_err_t mlx90396_read_measurement(struct mlx90394_device *dev, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
+{
+    rt_err_t res = RT_EOK;
+    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, 0x40, 0x00};
+
+    send_buf[3] = Slow_CRC_Cal8Bits(0x00, 3, send_buf);
+
+    if (dev->bus->type == RT_Device_Class_I2CBUS)
+    {
+#ifdef RT_USING_I2C
+        struct rt_i2c_msg msgs[2];
+
+        msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[0].flags = RT_I2C_WR;        /* Write flag */
+        msgs[0].buf   = &send_buf[1];        /* Write data pointer */
+        msgs[0].len   = 3;                /* Number of bytes write */
+
+        msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[1].flags = RT_I2C_RD;        /* Read flag */
+        msgs[1].buf   = recv_buf;         /* Read data pointer */
+        msgs[1].len   = recv_len;         /* Number of bytes read */
+
+        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
+        {
+            res = RT_EOK;
+        }
+        else
+        {
+            LOG_E("rt_i2c_transfer error\r\n");
+            res = -RT_ERROR;
+        }
+#endif
+    }
+
+    return res;
+}
+
+static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
+{
+    rt_err_t res = RT_EOK;
+    rt_uint8_t send_buf[5] = {dev->i2c_addr << 1, 0x80, 0x50, start_addr, 0xE7};
+
+    send_buf[4] = Slow_CRC_Cal8Bits(0x00, 4, send_buf);
+
+    if (dev->bus->type == RT_Device_Class_I2CBUS)
+    {
+#ifdef RT_USING_I2C
+        struct rt_i2c_msg msgs[2];
+
+        msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[0].flags = RT_I2C_WR;        /* Write flag */
+        msgs[0].buf   = &send_buf[1];        /* Write data pointer */
+        msgs[0].len   = 4;                /* Number of bytes write */
+
+        msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[1].flags = RT_I2C_RD;        /* Read flag */
+        msgs[1].buf   = recv_buf;         /* Read data pointer */
+        msgs[1].len   = recv_len;         /* Number of bytes read */
+
+        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
+        {
+            res = RT_EOK;
+        }
+        else
+        {
+            LOG_E("rt_i2c_transfer error\r\n");
+            res = -RT_ERROR;
+        }
+#endif
+    }
+
+    return res;
+}
+
+static rt_err_t mlx90396_write_register(struct mlx90394_device *dev, rt_uint8_t reg, rt_uint16_t data)
+{
+    rt_err_t res = RT_EOK;
+
+    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, 0x60, reg, (data&0xFF00)>>8, data&0xFF, 0x00};
+
+    send_buf[6] = Slow_CRC_Cal8Bits(0x00, 6, send_buf);
+
+    if (dev->bus->type == RT_Device_Class_I2CBUS)
+    {
+#ifdef RT_USING_I2C
+        struct rt_i2c_msg msgs;
+
+        msgs.addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs.flags = RT_I2C_WR;        /* Read flag */
+        msgs.buf   = &send_buf[1];         /* Read data pointer */
+        msgs.len   = 6;         /* Number of bytes read */
+
+        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, &msgs, 1) == 1)
+        {
+            res = RT_EOK;
+        }
+        else
+        {
+            LOG_E("rt_i2c_transfer error\r\n");
+            res = -RT_ERROR;
+        }
+#endif
+    }
+
+    return res;
+}
+
+static rt_err_t mlx90396_reset(struct mlx90394_device *dev)
+{
+    rt_err_t res = RT_EOK;
+    rt_uint8_t recv_buf[] = {0x00, 0x00};
+    rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, 0xF0, 0x00};
+
+    send_buf[3] = Slow_CRC_Cal8Bits(0x00, 3, send_buf);
+
+    if (dev->bus->type == RT_Device_Class_I2CBUS)
+    {
+#ifdef RT_USING_I2C
+        struct rt_i2c_msg msgs[2];
+
+        msgs[0].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[0].flags = RT_I2C_WR;        /* Write flag */
+        msgs[0].buf   = &send_buf[1];     /* Write data pointer */
+        msgs[0].len   = 3;                /* Number of bytes write */
+
+        msgs[1].addr  = dev->i2c_addr;    /* I2C Slave address */
+        msgs[1].flags = RT_I2C_RD;        /* Read flag */
+        msgs[1].buf   = recv_buf;         /* Read data pointer */
+        msgs[1].len   = 2;                /* Number of bytes read */
+
+        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, msgs, 2) == 2)
+        {
+            res = RT_EOK;
+
+            LOG_I("recv_buff[0] = 0x%x, recv_buff[1] = 0x%x\r\n", recv_buf[0], recv_buf[1]);
+        }
+        else
+        {
+            LOG_E("rt_i2c_transfer error\r\n");
+            res = -RT_ERROR;
+        }
+#endif
+    }
+
+    return res;
+}
+
+rt_err_t mlx90396_single_measurement_legacy(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+{
+    rt_uint8_t status = RT_EOK;
+    union mlx90396_status stat;
+    rt_uint8_t data[8];
+
+    union mlx90396_cmd_byte cmd;
+    cmd.dword_val = START_SINGLE_MEASUREMENT_MODE | MLX90396_MAG_MASK_PIXEL_0X | MLX90396_MAG_MASK_PIXEL_0Y | MLX90396_MAG_MASK_PIXEL_0Z;
+    mlx90396_set_mode(dev, cmd);
+
+    mlx90396_read_measurement(dev, data, 8);
+
+    stat.byte_val = data[0];
+    while (stat.drdy == 0)
+    {
+        LOG_I("drdy is not ready, start measure again\r\n");
+
+        rt_thread_delay(50);
+
+        mlx90396_read_measurement(dev, xyz, 8);
+
+        stat.byte_val = data[0];
+    }
+
+    xyz->x = (data[1]<<8) + data[2];
+    xyz->y = (data[3]<<8) + data[4];
+    xyz->z = (data[5]<<8) + data[6];
+
+//    LOG_I("X0 is 0x%x\r\n", (data[1]<<8) + data[2]);
+//    LOG_I("Y0 is 0x%x\r\n", (data[3]<<8) + data[4]);
+//    LOG_I("Z0 is 0x%x\r\n", (data[5]<<8) + data[6]);
+
+    return status;
+}
+
+rt_err_t mlx90396_single_measurement_pixel0(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+{
+    rt_uint8_t status = RT_EOK;
+    union mlx90396_status stat;
+    rt_uint8_t data[8];
+
+    union mlx90396_cmd_byte cmd;
+    cmd.dword_val = START_SINGLE_MEASUREMENT_MODE | MLX90396_MAG_MASK_PIXEL_0X | MLX90396_MAG_MASK_PIXEL_0Y | MLX90396_MAG_MASK_PIXEL_0Z;
+    mlx90396_set_mode(dev, cmd);
+
+    mlx90396_read_measurement(dev, data, 8);
+
+    stat.byte_val = data[0];
+    while (stat.drdy == 0)
+    {
+        LOG_I("drdy is not ready, start measure again\r\n");
+
+        rt_thread_delay(50);
+
+        mlx90396_read_measurement(dev, xyz, 8);
+
+        stat.byte_val = data[0];
+    }
+
+    xyz->x = (data[1]<<8) + data[2];
+    xyz->y = (data[3]<<8) + data[4];
+    xyz->z = (data[5]<<8) + data[6];
+
+//    LOG_I("X0 is 0x%x\r\n", (data[1]<<8) + data[2]);
+//    LOG_I("Y0 is 0x%x\r\n", (data[3]<<8) + data[4]);
+//    LOG_I("Z0 is 0x%x\r\n", (data[5]<<8) + data[6]);
+
+    return status;
+}
+
+rt_err_t mlx90396_single_measurement_pixel1(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+{
+    rt_uint8_t status = RT_EOK;
+    union mlx90396_status stat;
+    rt_uint8_t data[8];
+
+    union mlx90396_cmd_byte cmd;
+    cmd.dword_val = START_SINGLE_MEASUREMENT_MODE | MLX90396_MAG_MASK_PIXEL_1X | MLX90396_MAG_MASK_PIXEL_1Y | MLX90396_MAG_MASK_PIXEL_1Z;
+    mlx90396_set_mode(dev, cmd);
+
+    mlx90396_read_measurement(dev, data, 8);
+
+    stat.byte_val = data[0];
+    while (stat.drdy == 0)
+    {
+        LOG_I("drdy is not ready, start measure again\r\n");
+
+        rt_thread_delay(50);
+
+        mlx90396_read_measurement(dev, xyz, 8);
+
+        stat.byte_val = data[0];
+    }
+
+    xyz->x = (data[1]<<8) + data[2];
+    xyz->y = (data[3]<<8) + data[4];
+    xyz->z = (data[5]<<8) + data[6];
+
+//    LOG_I("X0 is 0x%x\r\n", (data[1]<<8) + data[2]);
+//    LOG_I("Y0 is 0x%x\r\n", (data[3]<<8) + data[4]);
+//    LOG_I("Z0 is 0x%x\r\n", (data[5]<<8) + data[6]);
+
+    return status;
+}
+
+rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, rt_uint8_t *data)
+{
+    rt_uint8_t status = RT_EOK;
+    union mlx90396_status stat;
+
+    union mlx90396_cmd_byte cmd;
+    cmd.dword_val = START_SINGLE_MEASUREMENT_MODE | MLX90396_MAG_MASK_PIXEL_02X | MLX90396_MAG_MASK_PIXEL_02Z | MLX90396_MAG_MASK_PIXEL_13Y | MLX90396_MAG_MASK_PIXEL_13Z;
+    mlx90396_set_mode(dev, cmd);
+
+    mlx90396_read_measurement(dev, data, 10);
+
+    stat.byte_val = data[0];
+    while (stat.drdy == 0)
+    {
+        rt_thread_delay(50);
+
+        mlx90396_read_measurement(dev, data, 10);
+
+        stat.byte_val = data[0];
+    }
+
+    LOG_I("X02 is 0x%x\r\n", (data[1]<<8) + data[2]);
+    LOG_I("Z02 is 0x%x\r\n", (data[3]<<8) + data[4]);
+    LOG_I("Y13 is 0x%x\r\n", (data[5]<<8) + data[6]);
+    LOG_I("Z13 is 0x%x\r\n", (data[7]<<8) + data[8]);
+
+    return status;
 }
 
 rt_err_t mlx90394_reset(struct mlx90394_device *dev)
@@ -1184,14 +1515,14 @@ rt_err_t mlx90394_single_measurement(struct mlx90394_device *dev, struct mlx9039
 }
 
 /**
- * This function initialize the mlx90394 device.
+ * This function initialize the mlx90396 device.
  *
  * @param dev_name the name of transfer device
  * @param param the i2c device address for i2c communication
  *
  * @return the pointer of device driver structure, RT_NULL represents  initialization failed.
  */
-struct mlx90394_device *mlx90394_init(const char *dev_name, rt_uint8_t param)
+struct mlx90394_device *mlx90396_init(const char *dev_name, rt_uint8_t param)
 {
     struct mlx90394_device *dev = RT_NULL;
 
@@ -1200,7 +1531,7 @@ struct mlx90394_device *mlx90394_init(const char *dev_name, rt_uint8_t param)
     dev = rt_calloc(1, sizeof(struct mlx90394_device));
     if (dev == RT_NULL)
     {
-        LOG_E("Can't allocate memory for mlx90394 device on '%s' ", dev_name);
+        LOG_E("Can't allocate memory for mlx90396 device on '%s' ", dev_name);
         goto __exit;
     }
 
@@ -1220,11 +1551,14 @@ struct mlx90394_device *mlx90394_init(const char *dev_name, rt_uint8_t param)
         }
         else
         {
-            /* find mlx90394 device at address: MLX90394_I2C_ADDRESS */
+            /* find mlx90396 device at address: MLX90396_I2C_ADDRESS */
             dev->i2c_addr = MLX90394_I2C_ADDRESS;
         }
 
         rt_uint8_t id[4];
+        rt_uint8_t dat[4];
+        rt_uint8_t warning[4];
+        rt_uint8_t xyz[10];
 
         for (rt_uint8_t i=0; i<128; i++)
         {
@@ -1236,10 +1570,71 @@ struct mlx90394_device *mlx90394_init(const char *dev_name, rt_uint8_t param)
                 {
                     LOG_I("Device i2c address is:'0x%x'!\r\n", dev->i2c_addr);
 
-                    LOG_I("STATUS is 0x%x\r\n", id[0]);
                     LOG_I("XPOS is 0x%x\r\n", id[1]);
                     LOG_I("YPOS is 0x%x\r\n", id[2]);
                     LOG_I("CRC is 0x%x\r\n", id[3]);
+
+                    dat[0] = ((dev->i2c_addr) << 1) + 1;
+                    dat[1] = id[0];
+                    dat[2] = id[1];
+                    dat[3] = id[2];
+
+                    if (id[3] != Slow_CRC_Cal8Bits(0x0, 4, dat))
+                    {
+                        LOG_E("CRC error\r\n");
+                        continue;
+                    }
+
+//                    mlx90396_reset(dev);
+
+                    mlx90396_read_register(dev, 0x42, warning, 4);
+                    LOG_I("WARN is 0x%x\r\n", warning[1]);
+                    LOG_I("WARN is 0x%x\r\n", warning[2]);
+
+#if 0
+                    struct mlx90396_cmd_bytes cmd;
+
+                    cmd.cmd_byte1.function_id = START_BURST_MODE;
+//                    cmd.cmd_byte1 |= MLX90396_MAG_MASK_PIXEL_0Z | MLX90396_MAG_MASK_PIXEL_1Z | MLX90396_MAG_MASK_PIXEL_2Z | MLX90396_MAG_MASK_PIXEL_3Z;
+                    cmd.cmd_byte1.x0 = 0;
+                    cmd.cmd_byte1.y0 = 0;
+                    cmd.cmd_byte1.z0 = 1;
+                    cmd.cmd_byte1.x1 = 0;
+
+                    cmd.cmd_byte2.y1 = 0;
+                    cmd.cmd_byte2.z1 = 1;
+                    cmd.cmd_byte2.x2 = 0;
+                    cmd.cmd_byte2.y2 = 0;
+                    cmd.cmd_byte2.z2 = 1;
+                    cmd.cmd_byte2.x3 = 0;
+                    cmd.cmd_byte2.y3 = 0;
+                    cmd.cmd_byte2.z3 = 1;
+
+                    cmd.cmd_byte3.byte_val = 0x0;
+
+                    mlx90396_SB(dev, cmd);   //Starting Burst Measurement (Z0, Z1, Z2, Z3)
+#else
+                    union mlx90396_cmd_byte cmd;
+
+//                    cmd.dword_val = START_BURST_MODE | MLX90396_MAG_MASK_PIXEL_0Z | MLX90396_MAG_MASK_PIXEL_1Z | MLX90396_MAG_MASK_PIXEL_2Z | MLX90396_MAG_MASK_PIXEL_3Z;
+                    cmd.dword_val = START_SINGLE_MEASUREMENT_MODE | MLX90396_MAG_MASK_PIXEL_0Z | MLX90396_MAG_MASK_PIXEL_1Z | MLX90396_MAG_MASK_PIXEL_2Z | MLX90396_MAG_MASK_PIXEL_3Z;
+
+                    mlx90396_set_mode(dev, cmd);   //Starting Burst Measurement (Z0, Z1, Z2, Z3)
+#endif
+                    rt_thread_delay(500);
+
+                    mlx90396_read_measurement(dev, xyz, 10);
+
+                    union mlx90396_status status;
+                    status.byte_val = xyz[0];
+
+                    LOG_I("status = 0x%x\r\n", xyz[0]);
+                    LOG_I("drdy = 0x%x,  error = 0x%x, infor_warn = 0x%x, counter = 0x%x, function_id = 0x%x\r\n", status.drdy, status.error, status.info_warn, status.measurement_counter, status.function_id);
+
+                    LOG_I("Z0 is 0x%x\r\n", (xyz[1]<<8) + xyz[2]);
+                    LOG_I("Z1 is 0x%x\r\n", (xyz[3]<<8) + xyz[4]);
+                    LOG_I("Z2 is 0x%x\r\n", (xyz[5]<<8) + xyz[6]);
+                    LOG_I("Z3 is 0x%x\r\n", (xyz[7]<<8) + xyz[8]);
 
                     return dev;
                 }
@@ -1304,9 +1699,9 @@ static void mlx90394(int argc, char **argv)
             }
 
             if (argc == 2)
-                dev = mlx90394_init("i2c2", RT_NULL);
+                dev = mlx90396_init("i2c2", RT_NULL);
             else if (argc == 3)
-                dev = mlx90394_init(argv[2], RT_NULL);
+                dev = mlx90396_init(argv[2], RT_NULL);
         }
         else if (dev == RT_NULL)
         {

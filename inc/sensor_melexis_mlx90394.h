@@ -32,6 +32,6 @@ enum
     RT_SENSOR_CTRL_USER_CMD_SET_OSR_TEMP,
 };
 
-int rt_hw_mlx90394_init(const char *name, struct rt_sensor_config *cfg);
+int rt_hw_mlx90396_init(const char *name, struct rt_sensor_config *cfg);
 
 #endif

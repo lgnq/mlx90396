@@ -43,6 +43,182 @@
 #define MLX90394_ADDR_WOC_THRESHOLD_Y 0x5A
 #define MLX90394_ADDR_WOC_THRESHOLD_Z 0x5C
 
+/**
+ *  Magnetic Sensor Measurement masks
+ *  These masks are used to determine which measurements need to be done
+ */
+typedef enum MLX90396_MAG_MASK_PIXEL
+{
+    MLX90396_MAG_MASK_PIXEL_0X = 0x8000000u,
+    MLX90396_MAG_MASK_PIXEL_0Y = 0x4000000u,
+    MLX90396_MAG_MASK_PIXEL_0Z = 0x2000000u,
+    MLX90396_MAG_MASK_PIXEL_1X = 0x1000000u,
+
+    MLX90396_MAG_MASK_PIXEL_1Y = 0x0800000u,
+    MLX90396_MAG_MASK_PIXEL_1Z = 0x0400000u,
+    MLX90396_MAG_MASK_PIXEL_2X = 0x0200000u,
+    MLX90396_MAG_MASK_PIXEL_2Y = 0x0100000u,
+
+    MLX90396_MAG_MASK_PIXEL_2Z = 0x0080000u,
+    MLX90396_MAG_MASK_PIXEL_3X = 0x0040000u,
+    MLX90396_MAG_MASK_PIXEL_3Y = 0x0020000u,
+    MLX90396_MAG_MASK_PIXEL_3Z = 0x0010000u,
+
+    MLX90396_MAG_MASK_PIXEL_02X = 0x0008000u,
+    MLX90396_MAG_MASK_PIXEL_02Y = 0x0004000u,
+    MLX90396_MAG_MASK_PIXEL_02Z = 0x0002000u,
+    MLX90396_MAG_MASK_PIXEL_13X = 0x0001000u,
+
+    MLX90396_MAG_MASK_PIXEL_13Y = 0x0000800u,
+    MLX90396_MAG_MASK_PIXEL_13Z = 0x0000400u,
+    MLX90396_MAG_MASK_VDD       = 0x0000200u,
+    MLX90396_MAG_MASK_D         = 0x0000100u,
+
+    MLX90396_MAG_MASK_PIXEL_NO_SELECTION = 0x00000u,
+} tMlx90396MagMask;
+
+enum mlx90396_function_id
+{
+    START_BURST_MODE                = 0x10000000u,
+    START_WOC_MODE                  = 0x20000000u,
+    START_SINGLE_MEASUREMENT_MODE   = 0x30000000u,
+    READ_MEASUREMENT                = 0x40000000u,
+    READ_REGISTER                   = 0x50000000u,
+    WRITE_REGISTER                  = 0x60000000u,
+    RESERVED1                       = 0x70000000u,
+    EXIT_MODE                       = 0x80000000u,
+    MEMORY_RECALL                   = 0xD0000000u,
+    MEMORY_STORE                    = 0xE0000000u,
+    RESET                           = 0xF0000000u,
+};
+
+union mlx90396_cmd_byte1
+{
+    rt_uint8_t byte_val;
+
+    struct
+    {
+        rt_uint8_t x1           : 1;    //BIT0
+        rt_uint8_t z0           : 1;
+        rt_uint8_t y0           : 1;
+        rt_uint8_t x0           : 1;
+        rt_uint8_t function_id  : 4;
+    };
+};
+
+union mlx90396_cmd_byte2
+{
+    rt_uint8_t byte_val;
+
+    struct
+    {
+        rt_uint8_t z3           : 1;    //BIT0
+        rt_uint8_t y3           : 1;
+        rt_uint8_t x3           : 1;
+        rt_uint8_t z2           : 1;
+        rt_uint8_t y2           : 1;
+        rt_uint8_t x2           : 1;
+        rt_uint8_t z1           : 1;
+        rt_uint8_t y1           : 1;
+    };
+};
+
+union mlx90396_cmd_byte3
+{
+    rt_uint8_t byte_val;
+
+    struct
+    {
+        rt_uint8_t d             : 1;    //BIT0
+        rt_uint8_t vdd           : 1;
+        rt_uint8_t z13           : 1;
+        rt_uint8_t y13           : 1;
+        rt_uint8_t x13           : 1;
+        rt_uint8_t z02           : 1;
+        rt_uint8_t y02           : 1;
+        rt_uint8_t x02           : 1;
+    };
+};
+
+union mlx90396_cmd_byte
+{
+    rt_uint32_t dword_val;
+
+    struct
+    {
+        rt_uint8_t cmd_byte1;
+        rt_uint8_t cmd_byte2;
+        rt_uint8_t cmd_byte3;
+        rt_uint8_t cmd_byte4;
+    };
+};
+
+struct mlx90396_cmd_bytes
+{
+    union mlx90396_cmd_byte1 cmd_byte1;
+    union mlx90396_cmd_byte2 cmd_byte2;
+    union mlx90396_cmd_byte3 cmd_byte3;
+};
+
+union mlx90396_status
+{
+    rt_uint8_t byte_val;
+
+    struct
+    {
+        rt_uint8_t drdy                 : 1;    //BIT0
+        rt_uint8_t info_warn            : 1;
+        rt_uint8_t error                : 1;
+        rt_uint8_t measurement_counter  : 3;
+        rt_uint8_t function_id          : 2;
+    };
+};
+
+union mlx90396_info_warn
+{
+    rt_uint16_t word_val;
+
+    struct
+    {
+        rt_uint8_t mi6      : 1;    //BIT0
+        rt_uint8_t rst      : 1;
+        rt_uint8_t ovf      : 1;
+        rt_uint8_t sec      : 1;
+        rt_uint8_t ovvddd   : 1;
+        rt_uint8_t uvvdd    : 1;
+        rt_uint8_t ovvdd    : 1;
+        rt_uint8_t uvtemp   : 1;
+        rt_uint8_t ovtemp   : 1;
+        rt_uint8_t wocm1    : 1;
+        rt_uint8_t wocm2    : 1;
+        rt_uint8_t wocm3    : 1;
+        rt_uint8_t wocm4    : 1;
+        rt_uint8_t wocm5    : 1;
+        rt_uint8_t wocm6    : 1;
+        rt_uint8_t woc_t    : 1;
+    };
+};
+
+union mlx90396_error
+{
+    rt_uint16_t word_val;
+
+    struct
+    {
+        rt_uint8_t ce_crc       : 1;    //BIT0
+        rt_uint8_t ce_invalid   : 1;
+        rt_uint8_t ded          : 1;
+        rt_uint8_t crcerr       : 1;
+        rt_uint8_t bus_error    : 1;
+        rt_uint8_t diag_dac     : 1;
+        rt_uint8_t diag_lfo     : 1;
+        rt_uint8_t diag_osc     : 1;
+        rt_uint8_t diag_die     : 1;
+        rt_uint8_t diag_hp      : 1;
+        rt_uint8_t diag_intb    : 1;
+    };
+};
+
 //ADDR = 0x00
 union mlx90394_stat1
 {
@@ -183,6 +359,8 @@ struct mlx90394_device
     float sensitivity;
 };
 
+unsigned char Fast_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buffer);
+
 /**
  * This function initialize the mlx90394 device.
  *
@@ -191,7 +369,12 @@ struct mlx90394_device
  *
  * @return the pointer of device driver structure, RT_NULL represents initialization failed.
  */
-struct mlx90394_device *mlx90394_init(const char *dev_name, rt_uint8_t param);
+struct mlx90394_device *mlx90396_init(const char *dev_name, rt_uint8_t param);
+
+rt_err_t mlx90396_single_measurement_legacy(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_pixel0(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_pixel1(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, rt_uint8_t *data);
 
 /**
  * This function releases memory
