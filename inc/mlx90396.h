@@ -8,8 +8,8 @@
  * 2022-02-14     lgnq         the first version
  */
 
-#ifndef __MLX90394_H__
-#define __MLX90394_H__
+#ifndef __MLX90396_H__
+#define __MLX90396_H__
 
 #include <rtthread.h>
 

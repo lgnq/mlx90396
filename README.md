@@ -1,8 +1,8 @@
-# MLX90394
+# MLX90396
 
 ## Introduction
 
-This software package is a universal sensor driver package for Melexis's Magnetic Position sensors, compatible with mlx90394. 
+This software package is a universal sensor driver package for Melexis's Magnetic Position sensors, compatible with mlx90396. 
 And this software package has been connected to the Sensor framework, through the Sensor framework, developers can quickly drive this sensor.
 
 ## Support
@@ -31,55 +31,55 @@ And this software package has been connected to the Sensor framework, through th
 
 - RT-Thread 4.0.0+
 - Sensor component
-- IIC driver: mlx90394 devices use IIC for data communication, and need system IIC driver support;
+- IIC driver: mlx90396 devices use IIC for data communication, and need system IIC driver support;
 
 ### Get the package
 
-To use the MLX90394 software package, you need to select it in the RT-Thread package management. The specific path is as follows:
+To use the MLX90396 software package, you need to select it in the RT-Thread package management. The specific path is as follows:
 
 ```
 RT-Thread online packages  --->
   peripheral libraries and drivers  --->
     sensors drivers  --->
-      mlx90394: Universal 3-axis sensor driver package,support: magnetometer.
+      mlx90396: Universal 3-axis sensor driver package,support: magnetometer.
               Version (latest)  --->
-        [*]   Enable mlx90394 mag
+        [*]   Enable mlx90396 mag
 ```
 
-**Enable mlx90394 mag**: Configure to turn on the Magnetometer function
+**Enable mlx90396 mag**: Configure to turn on the Magnetometer function
 
 **Version**: software package version selection
 
 ### Using packages
 
-The initialization function of MLX90394 software package is as follows:
+The initialization function of MLX90396 software package is as follows:
 
 ```
-int rt_hw_mlx90394_init(const char *name, struct rt_sensor_config *cfg);
+int rt_hw_mlx90396_init(const char *name, struct rt_sensor_config *cfg);
 ```
 
 This function needs to be called by the user. The main functions of the function are:
 
 - Device configuration and initialization (configure interface devices and interrupt pins according to the incoming configuration information);
-- Register the corresponding sensor device and complete the registration of the mlx90394 device;
+- Register the corresponding sensor device and complete the registration of the mlx90396 device;
 
 #### Initialization example
 
 ```
-#include "sensor_melexis_mlx90394.h"
+#include "sensor_melexis_mlx90396.h"
 
-int rt_hw_mlx90394_port(void)
+int rt_hw_mlx90396_port(void)
 {
     struct rt_sensor_config cfg;
     
     cfg.intf.dev_name = "i2c1";
-    cfg.intf.user_data = (void *)mlx90394_ADDR_DEFAULT;
+    cfg.intf.user_data = (void *)mlx90396_ADDR_DEFAULT;
     cfg.irq_pin.pin = RT_PIN_NONE;
 
-    rt_hw_mlx90394_init("mlx", &cfg);
+    rt_hw_mlx90396_init("mlx", &cfg);
     return 0;
 }
-INIT_APP_EXPORT(rt_hw_mlx90394_port);
+INIT_APP_EXPORT(rt_hw_mlx90396_port);
 ```
 
 ## Precautions
@@ -92,4 +92,4 @@ Maintenance man:
 
 - [lgnq](https://github.com/lgnq)
 
-- Homepage: <https://github.com/lgnq/mlx90394>
+- Homepage: <https://github.com/lgnq/mlx90396>

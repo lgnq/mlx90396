@@ -8,11 +8,11 @@
  * 2022-02-14     lgnq         the first version
  */
 
-#ifndef __SENSOR_MELEXIS_MLX90394_H__
-#define __SENSOR_MELEXIS_MLX90394_H__
+#ifndef __SENSOR_MELEXIS_MLX90396_H__
+#define __SENSOR_MELEXIS_MLX90396_H__
 
 #include "sensor.h"
-#include "mlx90394.h"
+#include "mlx90396.h"
 
 enum
 {

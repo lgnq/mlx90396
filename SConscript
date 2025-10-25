@@ -6,13 +6,13 @@ cwd   = GetCurrentDir()
 
 # add mlx90394 src files.
 if GetDepend('PKG_USING_MLX90396'):
-    src += Glob('src/mlx90394.c')
+    src += Glob('src/mlx90396.c')
 
 if GetDepend('RT_USING_SENSOR'):
-    src += Glob('src/sensor_melexis_mlx90394.c')
+    src += Glob('src/sensor_melexis_mlx90396.c')
 
 if GetDepend('PKG_USING_MLX90396_SAMPLE'):
-    src += Glob('examples/mlx90394_sample.c')
+    src += Glob('examples/mlx90396_sample.c')
 
 # add mlx90394 include path.
 path  = [cwd + '/inc']

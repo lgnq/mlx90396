@@ -8,7 +8,7 @@
  * 2022-02-14     lgnq         the first version
  */
 
-#include "sensor_melexis_mlx90394.h"
+#include "sensor_melexis_mlx90396.h"
 #include <stdlib.h>
 
 #define DBG_TAG "sensor.melexis.mlx90396"

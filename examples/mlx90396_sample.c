@@ -9,7 +9,7 @@
  */
 
 #include <rtthread.h>
-#include "mlx90394.h"
+#include "mlx90396.h"
 
 /* Default configuration, please change according to the actual situation, support i2c and spi device name */
 #define MLX90394_DEVICE_NAME  "i2c2"

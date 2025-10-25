@@ -11,7 +11,7 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 
-#include "mlx90394.h"
+#include "mlx90396.h"
 
 #include <string.h>
 #include <stdlib.h>
