@@ -228,7 +228,7 @@ int rt_hw_mlx90396_init(const char *name, struct rt_sensor_config *cfg)
 
 __exit:
     if (mlx_dev_temp)
-        mlx90394_deinit(mlx_dev_temp);
+        mlx90396_deinit(mlx_dev_temp);
 
     return -RT_ERROR;
 }

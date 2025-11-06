@@ -39,7 +39,7 @@ static int mlx90394_test()
         rt_thread_mdelay(100);
     }
 
-    mlx90394_deinit(dev);
+    mlx90396_deinit(dev);
 
     return 0;
 }

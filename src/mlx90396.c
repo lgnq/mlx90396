@@ -1666,7 +1666,7 @@ __exit:
  *
  * @param dev the pointer of device driver structure
  */
-void mlx90394_deinit(struct mlx90394_device *dev)
+void mlx90396_deinit(struct mlx90394_device *dev)
 {
     RT_ASSERT(dev);
 
@@ -1695,7 +1695,7 @@ static void mlx90394(int argc, char **argv)
         {
             if (dev)
             {
-                mlx90394_deinit(dev);
+                mlx90396_deinit(dev);
             }
 
             if (argc == 2)

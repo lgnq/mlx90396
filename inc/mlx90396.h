@@ -381,7 +381,7 @@ rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, r
  *
  * @param dev the pointer of device driver structure
  */
-void mlx90394_deinit(struct mlx90394_device *dev);
+void mlx90396_deinit(struct mlx90394_device *dev);
 
 rt_err_t mlx90394_get_cid(struct mlx90394_device *dev, rt_uint8_t *cid);
 rt_err_t mlx90394_get_did(struct mlx90394_device *dev, rt_uint8_t *did);
