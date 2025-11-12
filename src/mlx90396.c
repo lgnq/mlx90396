@@ -117,44 +117,6 @@ unsigned char Fast_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buff
  *
  * @return the reading status, RT_EOK represents reading the value of register successfully.
  */
-static rt_err_t mlx90394_mem_direct_read(struct mlx90394_device *dev, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
-{
-    rt_err_t res = RT_EOK;
-
-    if (dev->bus->type == RT_Device_Class_I2CBUS)
-    {
-#ifdef RT_USING_I2C
-        struct rt_i2c_msg msgs;
-
-        msgs.addr  = dev->i2c_addr;    /* I2C Slave address */
-        msgs.flags = RT_I2C_RD;        /* Read flag */
-        msgs.buf   = recv_buf;         /* Read data pointer */
-        msgs.len   = recv_len;         /* Number of bytes read */
-
-        if (rt_i2c_transfer((struct rt_i2c_bus_device *)dev->bus, &msgs, 1) == 1)
-        {
-            res = RT_EOK;
-        }
-        else
-        {
-            LOG_E("rt_i2c_transfer error\r\n");
-            res = -RT_ERROR;
-        }
-#endif
-    }
-
-    return res;
-}
-
-/**
- * This function reads the value of register for mlx90394
- *
- * @param dev the pointer of device driver structure
- * @param reg the register for mlx90394
- * @param val read data pointer
- *
- * @return the reading status, RT_EOK represents reading the value of register successfully.
- */
 static rt_err_t mlx90394_mem_read(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
 {
     rt_err_t res = RT_EOK;
