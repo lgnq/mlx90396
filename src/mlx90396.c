@@ -28,10 +28,8 @@ unsigned char Slow_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buff
 {
   int i;
 
-  while(Size--)
+  while (Size--)
   {
-//    LOG_I("Buf = 0x%x\r\n", *Buffer);
-
     crc = crc ^ *Buffer++; // Apply Byte
 
     for(i=0; i<8; i++) // Eight rounds of 1-bit
@@ -42,8 +40,6 @@ unsigned char Slow_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buff
         crc = (crc << 1); // Left Shifting
     }
   }
-
-//  LOG_I("CRC = 0x%x\r\n", crc);
 
   return(crc);
 }
