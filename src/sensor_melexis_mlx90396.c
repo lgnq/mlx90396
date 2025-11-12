@@ -15,11 +15,11 @@
 #define DBG_LVL DBG_INFO
 #include <rtdbg.h>
 
-#define mlx_dev ((struct mlx90394_device *)sensor->parent.user_data)
+#define mlx_dev ((struct mlx90396_device *)sensor->parent.user_data)
 
 rt_uint16_t sample_freq = 100;
 
-static struct mlx90394_device *_mlx90396_init(struct rt_sensor_intf *intf)
+static struct mlx90396_device *_mlx90396_init(struct rt_sensor_intf *intf)
 {
     rt_uint8_t i2c_addr = (rt_uint32_t)(intf->user_data) & 0xff;
 
@@ -38,7 +38,7 @@ rt_err_t mlx90396_get_info(rt_sensor_t sensor)
 //    mlx90394_ctrl3_t ctrl3;
 //    mlx90394_ctrl4_t ctrl4;
 
-    struct mlx90394_device *dev = ((struct mlx90394_device *)sensor->parent.user_data);
+    struct mlx90396_device *dev = ((struct mlx90396_device *)sensor->parent.user_data);
 
     if (dev == RT_NULL)
     {
@@ -79,7 +79,7 @@ static rt_size_t _mlx90396_polling_get_data(rt_sensor_t sensor, struct rt_sensor
     {
         struct mlx90394_xyz xyz;
 
-        if (mlx90396_single_measurement_legacy((struct mlx90394_device *)sensor->parent.user_data, &xyz) != RT_EOK)
+        if (mlx90396_single_measurement_legacy((struct mlx90396_device *)sensor->parent.user_data, &xyz) != RT_EOK)
         {
             LOG_E("mlx90396_single_measurement error\r\n");
 
@@ -187,7 +187,7 @@ static struct rt_sensor_ops sensor_ops =
 int rt_hw_mlx90396_init(const char *name, struct rt_sensor_config *cfg)
 {
     rt_int8_t result;
-    struct mlx90394_device *mlx_dev_temp;
+    struct mlx90396_device *mlx_dev_temp;
     rt_sensor_t sensor_mps = RT_NULL;
 
     mlx_dev_temp = _mlx90396_init(&cfg->intf);

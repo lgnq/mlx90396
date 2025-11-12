@@ -17,7 +17,7 @@
 /* Test function */
 static int mlx90394_test()
 {
-    struct mlx90394_device *dev;
+    struct mlx90396_device *dev;
     int i;
 
     /* Initialize mlx90394, The parameter is RT_NULL, means auto probing for i2c*/

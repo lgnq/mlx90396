@@ -117,7 +117,7 @@ unsigned char Fast_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buff
  *
  * @return the reading status, RT_EOK represents reading the value of register successfully.
  */
-static rt_err_t mlx90394_mem_read(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
+static rt_err_t mlx90394_mem_read(struct mlx90396_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[5] = {dev->i2c_addr << 1, 0x80, 0x50, start_addr, 0xE7};
@@ -164,7 +164,7 @@ static rt_err_t mlx90394_mem_read(struct mlx90394_device *dev, rt_uint8_t start_
  * @return the reading status, RT_EOK represents reading the value of register successfully.
  */
 //send_buf = start register address + data1 + data2 + ...
-static rt_err_t mlx90394_mem_write(struct mlx90394_device *dev, rt_uint8_t *send_buf, rt_uint8_t send_len)
+static rt_err_t mlx90394_mem_write(struct mlx90396_device *dev, rt_uint8_t *send_buf, rt_uint8_t send_len)
 {
     rt_err_t res = RT_EOK;
 
@@ -193,7 +193,7 @@ static rt_err_t mlx90394_mem_write(struct mlx90394_device *dev, rt_uint8_t *send
     return res;
 }
 
-static rt_err_t mlx90396_set_mode(struct mlx90394_device *dev, union mlx90396_cmd_byte cmd)
+static rt_err_t mlx90396_set_mode(struct mlx90396_device *dev, union mlx90396_cmd_byte cmd)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[] = {0x00, 0x00};
@@ -242,7 +242,7 @@ static rt_err_t mlx90396_set_mode(struct mlx90394_device *dev, union mlx90396_cm
     return res;
 }
 
-static rt_err_t mlx90396_read_measurement(struct mlx90394_device *dev, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
+static rt_err_t mlx90396_read_measurement(struct mlx90396_device *dev, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[] = {dev->i2c_addr << 1, 0x80, 0x40, 0x00};
@@ -279,7 +279,7 @@ static rt_err_t mlx90396_read_measurement(struct mlx90394_device *dev, rt_uint8_
     return res;
 }
 
-static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
+static rt_err_t mlx90396_read_register(struct mlx90396_device *dev, rt_uint8_t start_addr, rt_uint8_t *recv_buf, rt_uint8_t recv_len)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[5] = {dev->i2c_addr << 1, 0x80, 0x50, start_addr, 0xE7};
@@ -316,7 +316,7 @@ static rt_err_t mlx90396_read_register(struct mlx90394_device *dev, rt_uint8_t s
     return res;
 }
 
-static rt_err_t mlx90396_write_register(struct mlx90394_device *dev, rt_uint8_t reg, rt_uint16_t data)
+static rt_err_t mlx90396_write_register(struct mlx90396_device *dev, rt_uint8_t reg, rt_uint16_t data)
 {
     rt_err_t res = RT_EOK;
 
@@ -349,7 +349,7 @@ static rt_err_t mlx90396_write_register(struct mlx90394_device *dev, rt_uint8_t 
     return res;
 }
 
-static rt_err_t mlx90396_reset(struct mlx90394_device *dev)
+static rt_err_t mlx90396_reset(struct mlx90396_device *dev)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[] = {0x00, 0x00};
@@ -389,7 +389,7 @@ static rt_err_t mlx90396_reset(struct mlx90394_device *dev)
     return res;
 }
 
-rt_err_t mlx90396_single_measurement_legacy(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+rt_err_t mlx90396_single_measurement_legacy(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90396_status stat;
@@ -424,7 +424,7 @@ rt_err_t mlx90396_single_measurement_legacy(struct mlx90394_device *dev, struct 
     return status;
 }
 
-rt_err_t mlx90396_single_measurement_pixel0(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+rt_err_t mlx90396_single_measurement_pixel0(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90396_status stat;
@@ -459,7 +459,7 @@ rt_err_t mlx90396_single_measurement_pixel0(struct mlx90394_device *dev, struct 
     return status;
 }
 
-rt_err_t mlx90396_single_measurement_pixel1(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+rt_err_t mlx90396_single_measurement_pixel1(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90396_status stat;
@@ -494,7 +494,7 @@ rt_err_t mlx90396_single_measurement_pixel1(struct mlx90394_device *dev, struct 
     return status;
 }
 
-rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, rt_uint8_t *data)
+rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90396_device *dev, rt_uint8_t *data)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90396_status stat;
@@ -523,7 +523,7 @@ rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, r
     return status;
 }
 
-rt_err_t mlx90394_reset(struct mlx90394_device *dev)
+rt_err_t mlx90394_reset(struct mlx90396_device *dev)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -543,7 +543,7 @@ rt_err_t mlx90394_reset(struct mlx90394_device *dev)
     return res;
 }
 
-rt_err_t mlx90394_get_cid(struct mlx90394_device *dev, rt_uint8_t *cid)
+rt_err_t mlx90394_get_cid(struct mlx90396_device *dev, rt_uint8_t *cid)
 {
     rt_err_t res = RT_EOK;
 
@@ -556,7 +556,7 @@ rt_err_t mlx90394_get_cid(struct mlx90394_device *dev, rt_uint8_t *cid)
     return res;
 }
 
-rt_err_t mlx90394_get_did(struct mlx90394_device *dev, rt_uint8_t *did)
+rt_err_t mlx90394_get_did(struct mlx90396_device *dev, rt_uint8_t *did)
 {
     rt_err_t res = RT_EOK;
 
@@ -569,7 +569,7 @@ rt_err_t mlx90394_get_did(struct mlx90394_device *dev, rt_uint8_t *did)
     return res;
 }
 
-static rt_err_t mlx90394_get_stat1(struct mlx90394_device *dev, union mlx90394_stat1 *stat1)
+static rt_err_t mlx90394_get_stat1(struct mlx90396_device *dev, union mlx90394_stat1 *stat1)
 {
     rt_err_t res = RT_EOK;
 
@@ -586,7 +586,7 @@ static rt_err_t mlx90394_get_stat1(struct mlx90394_device *dev, union mlx90394_s
     return res;
 }
 
-static rt_err_t mlx90394_get_stat2(struct mlx90394_device *dev, union mlx90394_stat2 *stat2)
+static rt_err_t mlx90394_get_stat2(struct mlx90396_device *dev, union mlx90394_stat2 *stat2)
 {
     rt_err_t res = RT_EOK;
 
@@ -603,7 +603,7 @@ static rt_err_t mlx90394_get_stat2(struct mlx90394_device *dev, union mlx90394_s
     return res;
 }
 
-rt_err_t mlx90394_get_ctrl1(struct mlx90394_device *dev, mlx90394_ctrl1_t *ctrl1)
+rt_err_t mlx90394_get_ctrl1(struct mlx90396_device *dev, mlx90394_ctrl1_t *ctrl1)
 {
     rt_err_t res = RT_EOK;
 
@@ -620,7 +620,7 @@ rt_err_t mlx90394_get_ctrl1(struct mlx90394_device *dev, mlx90394_ctrl1_t *ctrl1
     return res;
 }
 
-rt_err_t mlx90394_set_ctrl1(struct mlx90394_device *dev, rt_uint8_t val)
+rt_err_t mlx90394_set_ctrl1(struct mlx90396_device *dev, rt_uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -636,7 +636,7 @@ rt_err_t mlx90394_set_ctrl1(struct mlx90394_device *dev, rt_uint8_t val)
     return res;
 }
 
-rt_err_t mlx90394_get_ctrl2(struct mlx90394_device *dev, mlx90394_ctrl2_t *ctrl2)
+rt_err_t mlx90394_get_ctrl2(struct mlx90396_device *dev, mlx90394_ctrl2_t *ctrl2)
 {
     rt_err_t res = RT_EOK;
 
@@ -653,7 +653,7 @@ rt_err_t mlx90394_get_ctrl2(struct mlx90394_device *dev, mlx90394_ctrl2_t *ctrl2
     return res;
 }
 
-rt_err_t mlx90394_set_ctrl2(struct mlx90394_device *dev, rt_uint8_t val)
+rt_err_t mlx90394_set_ctrl2(struct mlx90396_device *dev, rt_uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -669,7 +669,7 @@ rt_err_t mlx90394_set_ctrl2(struct mlx90394_device *dev, rt_uint8_t val)
     return res;
 }
 
-rt_err_t mlx90394_get_ctrl3(struct mlx90394_device *dev, mlx90394_ctrl3_t *ctrl3)
+rt_err_t mlx90394_get_ctrl3(struct mlx90396_device *dev, mlx90394_ctrl3_t *ctrl3)
 {
     rt_err_t res = RT_EOK;
 
@@ -686,7 +686,7 @@ rt_err_t mlx90394_get_ctrl3(struct mlx90394_device *dev, mlx90394_ctrl3_t *ctrl3
     return res;
 }
 
-rt_err_t mlx90394_set_ctrl3(struct mlx90394_device *dev, rt_uint8_t val)
+rt_err_t mlx90394_set_ctrl3(struct mlx90396_device *dev, rt_uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -702,7 +702,7 @@ rt_err_t mlx90394_set_ctrl3(struct mlx90394_device *dev, rt_uint8_t val)
     return res;
 }
 
-rt_err_t mlx90394_get_ctrl4(struct mlx90394_device *dev, mlx90394_ctrl4_t *ctrl4)
+rt_err_t mlx90394_get_ctrl4(struct mlx90396_device *dev, mlx90394_ctrl4_t *ctrl4)
 {
     rt_err_t res = RT_EOK;
 
@@ -719,7 +719,7 @@ rt_err_t mlx90394_get_ctrl4(struct mlx90394_device *dev, mlx90394_ctrl4_t *ctrl4
     return res;
 }
 
-rt_err_t mlx90394_set_ctrl4(struct mlx90394_device *dev, rt_uint8_t val)
+rt_err_t mlx90394_set_ctrl4(struct mlx90396_device *dev, rt_uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -735,7 +735,7 @@ rt_err_t mlx90394_set_ctrl4(struct mlx90394_device *dev, rt_uint8_t val)
     return res;
 }
 
-static rt_bool_t mlx90394_is_data_ready(struct mlx90394_device *dev)
+static rt_bool_t mlx90394_is_data_ready(struct mlx90396_device *dev)
 {
     union mlx90394_stat1 stat1;
 
@@ -750,7 +750,7 @@ static rt_bool_t mlx90394_is_data_ready(struct mlx90394_device *dev)
     }
 }
 
-rt_err_t mlx90394_get_temperature(struct mlx90394_device *dev, float *t)
+rt_err_t mlx90394_get_temperature(struct mlx90396_device *dev, float *t)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[2];
@@ -769,7 +769,7 @@ rt_err_t mlx90394_get_temperature(struct mlx90394_device *dev, float *t)
     return res;
 }
 
-rt_err_t mlx90394_set_xonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
+rt_err_t mlx90394_set_xonoff(struct mlx90396_device *dev, rt_uint8_t onoff)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -796,7 +796,7 @@ rt_err_t mlx90394_set_xonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
     return res;
 }
 
-rt_err_t mlx90394_set_yonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
+rt_err_t mlx90394_set_yonoff(struct mlx90396_device *dev, rt_uint8_t onoff)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -823,7 +823,7 @@ rt_err_t mlx90394_set_yonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
     return res;
 }
 
-rt_err_t mlx90394_set_zonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
+rt_err_t mlx90394_set_zonoff(struct mlx90396_device *dev, rt_uint8_t onoff)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -850,7 +850,7 @@ rt_err_t mlx90394_set_zonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
     return res;
 }
 
-rt_err_t mlx90394_set_tonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
+rt_err_t mlx90394_set_tonoff(struct mlx90396_device *dev, rt_uint8_t onoff)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -877,7 +877,7 @@ rt_err_t mlx90394_set_tonoff(struct mlx90394_device *dev, rt_uint8_t onoff)
     return res;
 }
 
-rt_err_t mlx90394_get_mode(struct mlx90394_device *dev, rt_uint8_t *mode)
+rt_err_t mlx90394_get_mode(struct mlx90396_device *dev, rt_uint8_t *mode)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl1_t ctrl1;
@@ -894,7 +894,7 @@ rt_err_t mlx90394_get_mode(struct mlx90394_device *dev, rt_uint8_t *mode)
     return res;
 }
 
-rt_err_t mlx90394_set_mode(struct mlx90394_device *dev, enum mlx90394_mode application_mode)
+rt_err_t mlx90394_set_mode(struct mlx90396_device *dev, enum mlx90394_mode application_mode)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -963,7 +963,7 @@ rt_err_t mlx90394_set_mode(struct mlx90394_device *dev, enum mlx90394_mode appli
     return res;
 }
 
-rt_err_t mlx90394_get_range(struct mlx90394_device *dev, rt_uint8_t *range)
+rt_err_t mlx90394_get_range(struct mlx90396_device *dev, rt_uint8_t *range)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl2_t ctrl2;
@@ -980,7 +980,7 @@ rt_err_t mlx90394_get_range(struct mlx90394_device *dev, rt_uint8_t *range)
     return res;
 }
 
-rt_err_t mlx90394_set_range(struct mlx90394_device *dev, enum mlx90394_range range)
+rt_err_t mlx90394_set_range(struct mlx90396_device *dev, enum mlx90394_range range)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1025,7 +1025,7 @@ rt_err_t mlx90394_set_range(struct mlx90394_device *dev, enum mlx90394_range ran
     return res;
 }
 
-rt_err_t mlx90394_get_osr_hall(struct mlx90394_device *dev, uint8_t *val)
+rt_err_t mlx90394_get_osr_hall(struct mlx90396_device *dev, uint8_t *val)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl3_t ctrl3;
@@ -1042,7 +1042,7 @@ rt_err_t mlx90394_get_osr_hall(struct mlx90394_device *dev, uint8_t *val)
     return res;
 }
 
-rt_err_t mlx90394_set_osr_hall(struct mlx90394_device *dev, uint8_t val)
+rt_err_t mlx90394_set_osr_hall(struct mlx90396_device *dev, uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1069,7 +1069,7 @@ rt_err_t mlx90394_set_osr_hall(struct mlx90394_device *dev, uint8_t val)
     return res;
 }
 
-rt_err_t mlx90394_get_osr_temp(struct mlx90394_device *dev, uint8_t *val)
+rt_err_t mlx90394_get_osr_temp(struct mlx90396_device *dev, uint8_t *val)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl3_t ctrl3;
@@ -1086,7 +1086,7 @@ rt_err_t mlx90394_get_osr_temp(struct mlx90394_device *dev, uint8_t *val)
     return res;
 }
 
-rt_err_t mlx90394_set_osr_temp(struct mlx90394_device *dev, uint8_t val)
+rt_err_t mlx90394_set_osr_temp(struct mlx90396_device *dev, uint8_t val)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1113,7 +1113,7 @@ rt_err_t mlx90394_set_osr_temp(struct mlx90394_device *dev, uint8_t val)
     return res;
 }
 
-rt_err_t mlx90394_get_xyz(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+rt_err_t mlx90394_get_xyz(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[6];
@@ -1129,7 +1129,7 @@ rt_err_t mlx90394_get_xyz(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
     return res;
 }
 
-static rt_err_t mlx90394_get_sensitivity(struct mlx90394_device *dev, float *sensitivity)
+static rt_err_t mlx90394_get_sensitivity(struct mlx90396_device *dev, float *sensitivity)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t range;
@@ -1160,7 +1160,7 @@ static rt_err_t mlx90394_get_sensitivity(struct mlx90394_device *dev, float *sen
     return res;
 }
 
-rt_err_t mlx90394_get_xyz_flux(struct mlx90394_device *dev, struct mlx90394_xyz_flux *xyz)
+rt_err_t mlx90394_get_xyz_flux(struct mlx90396_device *dev, struct mlx90394_xyz_flux *xyz)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[6];
@@ -1176,7 +1176,7 @@ rt_err_t mlx90394_get_xyz_flux(struct mlx90394_device *dev, struct mlx90394_xyz_
     return res;
 }
 
-rt_err_t mlx90394_get_woc_mode(struct mlx90394_device *dev, uint8_t *mode)
+rt_err_t mlx90394_get_woc_mode(struct mlx90396_device *dev, uint8_t *mode)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl2_t ctrl2;
@@ -1193,7 +1193,7 @@ rt_err_t mlx90394_get_woc_mode(struct mlx90394_device *dev, uint8_t *mode)
     return res;
 }
 
-rt_err_t mlx90394_set_woc_mode(struct mlx90394_device *dev, uint8_t mode)
+rt_err_t mlx90394_set_woc_mode(struct mlx90396_device *dev, uint8_t mode)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1220,7 +1220,7 @@ rt_err_t mlx90394_set_woc_mode(struct mlx90394_device *dev, uint8_t mode)
     return res;
 }
 
-rt_err_t mlx90394_get_dig_filt_xy(struct mlx90394_device *dev, uint8_t *dig_filt)
+rt_err_t mlx90394_get_dig_filt_xy(struct mlx90396_device *dev, uint8_t *dig_filt)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl3_t ctrl3;
@@ -1237,7 +1237,7 @@ rt_err_t mlx90394_get_dig_filt_xy(struct mlx90394_device *dev, uint8_t *dig_filt
     return res;
 }
 
-rt_err_t mlx90394_set_dig_filt_xy(struct mlx90394_device *dev, uint8_t dig_filt)
+rt_err_t mlx90394_set_dig_filt_xy(struct mlx90396_device *dev, uint8_t dig_filt)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1264,7 +1264,7 @@ rt_err_t mlx90394_set_dig_filt_xy(struct mlx90394_device *dev, uint8_t dig_filt)
     return res;
 }
 
-rt_err_t mlx90394_get_dig_filt_z(struct mlx90394_device *dev, uint8_t *dig_filt)
+rt_err_t mlx90394_get_dig_filt_z(struct mlx90396_device *dev, uint8_t *dig_filt)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl4_t ctrl4;
@@ -1281,7 +1281,7 @@ rt_err_t mlx90394_get_dig_filt_z(struct mlx90394_device *dev, uint8_t *dig_filt)
     return res;
 }
 
-rt_err_t mlx90394_set_dig_filt_z(struct mlx90394_device *dev, uint8_t dig_filt)
+rt_err_t mlx90394_set_dig_filt_z(struct mlx90396_device *dev, uint8_t dig_filt)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1308,7 +1308,7 @@ rt_err_t mlx90394_set_dig_filt_z(struct mlx90394_device *dev, uint8_t dig_filt)
     return res;
 }
 
-rt_err_t mlx90394_get_dig_filt_t(struct mlx90394_device *dev, uint8_t *dig_filt)
+rt_err_t mlx90394_get_dig_filt_t(struct mlx90396_device *dev, uint8_t *dig_filt)
 {
     rt_err_t res = RT_EOK;
     mlx90394_ctrl3_t ctrl3;
@@ -1325,7 +1325,7 @@ rt_err_t mlx90394_get_dig_filt_t(struct mlx90394_device *dev, uint8_t *dig_filt)
     return res;
 }
 
-rt_err_t mlx90394_set_dig_filt_t(struct mlx90394_device *dev, uint8_t dig_filt)
+rt_err_t mlx90394_set_dig_filt_t(struct mlx90396_device *dev, uint8_t dig_filt)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t send_buf[2];
@@ -1352,7 +1352,7 @@ rt_err_t mlx90394_set_dig_filt_t(struct mlx90394_device *dev, uint8_t dig_filt)
     return res;
 }
 
-void mlx90394_setup(struct mlx90394_device *dev)
+void mlx90394_setup(struct mlx90396_device *dev)
 {
 //    mlx90394_reset(dev);
 
@@ -1370,7 +1370,7 @@ void mlx90394_setup(struct mlx90394_device *dev)
  *
  * @return the reading status, RT_EOK represents  reading the data successfully.
  */
-static rt_err_t mlx90394_continuous_measurement(struct mlx90394_device *dev, struct mlx90394_xyz *xyz, rt_uint16_t freq)
+static rt_err_t mlx90394_continuous_measurement(struct mlx90396_device *dev, struct mlx90394_xyz *xyz, rt_uint16_t freq)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90394_stat1 stat1;
@@ -1434,7 +1434,7 @@ static rt_err_t mlx90394_continuous_measurement(struct mlx90394_device *dev, str
     return status;
 }
 
-rt_err_t mlx90394_single_measurement_raw(struct mlx90394_device *dev, struct mlx90394_xyz *xyz)
+rt_err_t mlx90394_single_measurement_raw(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90394_stat1 stat1;
@@ -1453,7 +1453,7 @@ rt_err_t mlx90394_single_measurement_raw(struct mlx90394_device *dev, struct mlx
     return status;
 }
 
-rt_err_t mlx90394_single_measurement(struct mlx90394_device *dev, struct mlx90394_xyz_flux *xyz)
+rt_err_t mlx90394_single_measurement(struct mlx90396_device *dev, struct mlx90394_xyz_flux *xyz)
 {
     rt_uint8_t status = RT_EOK;
     union mlx90394_stat1 stat1;
@@ -1480,13 +1480,13 @@ rt_err_t mlx90394_single_measurement(struct mlx90394_device *dev, struct mlx9039
  *
  * @return the pointer of device driver structure, RT_NULL represents  initialization failed.
  */
-struct mlx90394_device *mlx90396_init(const char *dev_name, rt_uint8_t param)
+struct mlx90396_device *mlx90396_init(const char *dev_name, rt_uint8_t param)
 {
-    struct mlx90394_device *dev = RT_NULL;
+    struct mlx90396_device *dev = RT_NULL;
 
     RT_ASSERT(dev_name);
 
-    dev = rt_calloc(1, sizeof(struct mlx90394_device));
+    dev = rt_calloc(1, sizeof(struct mlx90396_device));
     if (dev == RT_NULL)
     {
         LOG_E("Can't allocate memory for mlx90396 device on '%s' ", dev_name);
@@ -1624,7 +1624,7 @@ __exit:
  *
  * @param dev the pointer of device driver structure
  */
-void mlx90396_deinit(struct mlx90394_device *dev)
+void mlx90396_deinit(struct mlx90396_device *dev)
 {
     RT_ASSERT(dev);
 
@@ -1633,7 +1633,7 @@ void mlx90396_deinit(struct mlx90394_device *dev)
 
 static void mlx90394(int argc, char **argv)
 {
-    static struct mlx90394_device *dev = RT_NULL;
+    static struct mlx90396_device *dev = RT_NULL;
 
     /* If the number of arguments less than 2 */
     if (argc < 2)

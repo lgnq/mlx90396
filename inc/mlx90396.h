@@ -351,7 +351,7 @@ enum mlx90394_range
 };
 
 /* mlx90394 device structure */
-struct mlx90394_device
+struct mlx90396_device
 {
     rt_device_t bus;
     rt_uint8_t id;
@@ -369,53 +369,53 @@ unsigned char Fast_CRC_Cal8Bits(unsigned char crc, int Size, unsigned char *Buff
  *
  * @return the pointer of device driver structure, RT_NULL represents initialization failed.
  */
-struct mlx90394_device *mlx90396_init(const char *dev_name, rt_uint8_t param);
+struct mlx90396_device *mlx90396_init(const char *dev_name, rt_uint8_t param);
 
-rt_err_t mlx90396_single_measurement_legacy(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
-rt_err_t mlx90396_single_measurement_pixel0(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
-rt_err_t mlx90396_single_measurement_pixel1(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
-rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90394_device *dev, rt_uint8_t *data);
+rt_err_t mlx90396_single_measurement_legacy(struct mlx90396_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_pixel0(struct mlx90396_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_pixel1(struct mlx90396_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90396_device *dev, rt_uint8_t *data);
 
 /**
  * This function releases memory
  *
  * @param dev the pointer of device driver structure
  */
-void mlx90396_deinit(struct mlx90394_device *dev);
+void mlx90396_deinit(struct mlx90396_device *dev);
 
-rt_err_t mlx90394_get_cid(struct mlx90394_device *dev, rt_uint8_t *cid);
-rt_err_t mlx90394_get_did(struct mlx90394_device *dev, rt_uint8_t *did);
+rt_err_t mlx90394_get_cid(struct mlx90396_device *dev, rt_uint8_t *cid);
+rt_err_t mlx90394_get_did(struct mlx90396_device *dev, rt_uint8_t *did);
 
-rt_err_t mlx90394_get_ctrl1(struct mlx90394_device *dev, mlx90394_ctrl1_t *ctrl1);
-rt_err_t mlx90394_get_ctrl2(struct mlx90394_device *dev, mlx90394_ctrl2_t *ctrl2);
-rt_err_t mlx90394_get_ctrl3(struct mlx90394_device *dev, mlx90394_ctrl3_t *ctrl3);
-rt_err_t mlx90394_get_ctrl4(struct mlx90394_device *dev, mlx90394_ctrl4_t *ctrl4);
+rt_err_t mlx90394_get_ctrl1(struct mlx90396_device *dev, mlx90394_ctrl1_t *ctrl1);
+rt_err_t mlx90394_get_ctrl2(struct mlx90396_device *dev, mlx90394_ctrl2_t *ctrl2);
+rt_err_t mlx90394_get_ctrl3(struct mlx90396_device *dev, mlx90394_ctrl3_t *ctrl3);
+rt_err_t mlx90394_get_ctrl4(struct mlx90396_device *dev, mlx90394_ctrl4_t *ctrl4);
 
-rt_err_t mlx90394_set_xonoff(struct mlx90394_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_yonoff(struct mlx90394_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_zonoff(struct mlx90394_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_tonoff(struct mlx90394_device *dev, rt_uint8_t onoff);
+rt_err_t mlx90394_set_xonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
+rt_err_t mlx90394_set_yonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
+rt_err_t mlx90394_set_zonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
+rt_err_t mlx90394_set_tonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
 
-rt_err_t mlx90394_get_mode(struct mlx90394_device *dev, rt_uint8_t *mode);
-rt_err_t mlx90394_set_mode(struct mlx90394_device *dev, enum mlx90394_mode application_mode);
-rt_err_t mlx90394_get_range(struct mlx90394_device *dev, rt_uint8_t *range);
-rt_err_t mlx90394_set_range(struct mlx90394_device *dev, enum mlx90394_range range);
-rt_err_t mlx90394_get_woc_mode(struct mlx90394_device *dev, uint8_t *mode);
-rt_err_t mlx90394_set_woc_mode(struct mlx90394_device *dev, uint8_t mode);
-rt_err_t mlx90394_get_osr_hall(struct mlx90394_device *dev, uint8_t *val);
-rt_err_t mlx90394_set_osr_hall(struct mlx90394_device *dev, uint8_t val);
-rt_err_t mlx90394_get_osr_temp(struct mlx90394_device *dev, uint8_t *val);
-rt_err_t mlx90394_set_osr_temp(struct mlx90394_device *dev, uint8_t val);
-rt_err_t mlx90394_get_dig_filt_xy(struct mlx90394_device *dev, uint8_t *dig_filt);
-rt_err_t mlx90394_set_dig_filt_xy(struct mlx90394_device *dev, uint8_t dig_filt);
-rt_err_t mlx90394_get_dig_filt_z(struct mlx90394_device *dev, uint8_t *dig_filt);
-rt_err_t mlx90394_set_dig_filt_z(struct mlx90394_device *dev, uint8_t dig_filt);
-rt_err_t mlx90394_get_dig_filt_t(struct mlx90394_device *dev, uint8_t *dig_filt);
-rt_err_t mlx90394_set_dig_filt_t(struct mlx90394_device *dev, uint8_t dig_filt);
+rt_err_t mlx90394_get_mode(struct mlx90396_device *dev, rt_uint8_t *mode);
+rt_err_t mlx90394_set_mode(struct mlx90396_device *dev, enum mlx90394_mode application_mode);
+rt_err_t mlx90394_get_range(struct mlx90396_device *dev, rt_uint8_t *range);
+rt_err_t mlx90394_set_range(struct mlx90396_device *dev, enum mlx90394_range range);
+rt_err_t mlx90394_get_woc_mode(struct mlx90396_device *dev, uint8_t *mode);
+rt_err_t mlx90394_set_woc_mode(struct mlx90396_device *dev, uint8_t mode);
+rt_err_t mlx90394_get_osr_hall(struct mlx90396_device *dev, uint8_t *val);
+rt_err_t mlx90394_set_osr_hall(struct mlx90396_device *dev, uint8_t val);
+rt_err_t mlx90394_get_osr_temp(struct mlx90396_device *dev, uint8_t *val);
+rt_err_t mlx90394_set_osr_temp(struct mlx90396_device *dev, uint8_t val);
+rt_err_t mlx90394_get_dig_filt_xy(struct mlx90396_device *dev, uint8_t *dig_filt);
+rt_err_t mlx90394_set_dig_filt_xy(struct mlx90396_device *dev, uint8_t dig_filt);
+rt_err_t mlx90394_get_dig_filt_z(struct mlx90396_device *dev, uint8_t *dig_filt);
+rt_err_t mlx90394_set_dig_filt_z(struct mlx90396_device *dev, uint8_t dig_filt);
+rt_err_t mlx90394_get_dig_filt_t(struct mlx90396_device *dev, uint8_t *dig_filt);
+rt_err_t mlx90394_set_dig_filt_t(struct mlx90396_device *dev, uint8_t dig_filt);
 
-rt_err_t mlx90394_nop(struct mlx90394_device *dev);
-rt_err_t mlx90394_reset(struct mlx90394_device *dev);
+rt_err_t mlx90394_nop(struct mlx90396_device *dev);
+rt_err_t mlx90394_reset(struct mlx90396_device *dev);
 
-rt_err_t mlx90394_single_measurement_raw(struct mlx90394_device *dev, struct mlx90394_xyz *xyz);
-rt_err_t mlx90394_single_measurement(struct mlx90394_device *dev, struct mlx90394_xyz_flux *xyz);
+rt_err_t mlx90394_single_measurement_raw(struct mlx90396_device *dev, struct mlx90394_xyz *xyz);
+rt_err_t mlx90394_single_measurement(struct mlx90396_device *dev, struct mlx90394_xyz_flux *xyz);
 #endif
