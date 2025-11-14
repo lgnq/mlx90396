@@ -1352,7 +1352,7 @@ rt_err_t mlx90394_set_dig_filt_t(struct mlx90396_device *dev, uint8_t dig_filt)
     return res;
 }
 
-void mlx90394_setup(struct mlx90396_device *dev)
+void mlx90396_setup(struct mlx90396_device *dev)
 {
 //    mlx90394_reset(dev);
 
@@ -1703,7 +1703,7 @@ static void mlx90394(int argc, char **argv)
         }
         else if (!strcmp(argv[1], "setup"))
         {
-            mlx90394_setup(dev);
+            mlx90396_setup(dev);
         }
         else if (!strcmp(argv[1], "xyz"))
         {
