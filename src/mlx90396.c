@@ -523,26 +523,6 @@ rt_err_t mlx90396_single_measurement_sfi_joystick(struct mlx90396_device *dev, r
     return status;
 }
 
-rt_err_t mlx90394_reset(struct mlx90396_device *dev)
-{
-    rt_err_t res = RT_EOK;
-    rt_uint8_t send_buf[2];
-
-    send_buf[0] = MLX90394_ADDR_RST;
-    send_buf[1] = 0x06;
-    res = mlx90394_mem_write(dev, send_buf, 2);
-    if (res != RT_EOK)
-    {
-        LOG_E("Reset error\r\n");
-    }
-    else
-    {
-        LOG_I("Reset MLX90394 is done\r\n");
-    }
-
-    return res;
-}
-
 rt_err_t mlx90394_get_cid(struct mlx90396_device *dev, rt_uint8_t *cid)
 {
     rt_err_t res = RT_EOK;
@@ -1354,7 +1334,7 @@ rt_err_t mlx90394_set_dig_filt_t(struct mlx90396_device *dev, uint8_t dig_filt)
 
 void mlx90396_setup(struct mlx90396_device *dev)
 {
-//    mlx90394_reset(dev);
+//    mlx90396_reset(dev);
 
 //    rt_thread_delay(10000);
 

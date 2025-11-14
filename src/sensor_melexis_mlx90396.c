@@ -129,7 +129,7 @@ static rt_err_t mlx90396_control(struct rt_sensor_device *sensor, int cmd, void 
     case RT_SENSOR_CTRL_SELF_TEST:
         break;
     case RT_SENSOR_CTRL_USER_CMD_RESET:
-        result = mlx90394_reset(mlx_dev);
+        result = mlx90396_reset(mlx_dev);
         break;
     case RT_SENSOR_CTRL_USER_CMD_INFO:
         result = mlx90396_get_info(sensor);

@@ -414,7 +414,7 @@ rt_err_t mlx90394_get_dig_filt_t(struct mlx90396_device *dev, uint8_t *dig_filt)
 rt_err_t mlx90394_set_dig_filt_t(struct mlx90396_device *dev, uint8_t dig_filt);
 
 rt_err_t mlx90394_nop(struct mlx90396_device *dev);
-rt_err_t mlx90394_reset(struct mlx90396_device *dev);
+rt_err_t mlx90396_reset(struct mlx90396_device *dev);
 
 rt_err_t mlx90394_single_measurement_raw(struct mlx90396_device *dev, struct mlx90394_xyz *xyz);
 rt_err_t mlx90394_single_measurement(struct mlx90396_device *dev, struct mlx90394_xyz_flux *xyz);
