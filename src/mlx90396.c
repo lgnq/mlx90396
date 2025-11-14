@@ -349,7 +349,7 @@ static rt_err_t mlx90396_write_register(struct mlx90396_device *dev, rt_uint8_t 
     return res;
 }
 
-static rt_err_t mlx90396_reset(struct mlx90396_device *dev)
+rt_err_t mlx90396_reset(struct mlx90396_device *dev)
 {
     rt_err_t res = RT_EOK;
     rt_uint8_t recv_buf[] = {0x00, 0x00};
