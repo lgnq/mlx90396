@@ -1563,7 +1563,7 @@ void mlx90396_deinit(struct mlx90396_device *dev)
     rt_free(dev);
 }
 
-static void mlx90394(int argc, char **argv)
+static void mlx90396(int argc, char **argv)
 {
     static struct mlx90396_device *dev = RT_NULL;
 
@@ -1571,11 +1571,11 @@ static void mlx90394(int argc, char **argv)
     if (argc < 2)
     {
         LOG_I("\n");
-        LOG_I("mlx90394 [OPTION] [PARAM]\n");
-        LOG_I("         probe <dev_name>      Probe mlx90394 by given name, ex:i2c2\n");
+        LOG_I("mlx90396 [OPTION] [PARAM]\n");
+        LOG_I("         probe <dev_name>      Probe mlx90396 by given name, ex:i2c2\n");
         LOG_I("         id                    Print CID and DID\n");
         LOG_I("         stat1                 Print stat1\n");
-        LOG_I("         read [num]            read [num] times mlx90394\n");
+        LOG_I("         read [num]            read [num] times mlx90396\n");
         LOG_I("                               num default 5\n");
         return;
     }
@@ -1595,7 +1595,7 @@ static void mlx90394(int argc, char **argv)
         }
         else if (dev == RT_NULL)
         {
-            LOG_E("Please probe mlx90394 first!\n");
+            LOG_E("Please probe mlx90396 first!\n");
             return;
         }
         else if (!strcmp(argv[1], "id"))
@@ -1664,9 +1664,9 @@ static void mlx90394(int argc, char **argv)
 }
 #ifdef RT_USING_FINSH
 #include <finsh.h>
-FINSH_FUNCTION_EXPORT(mlx90394, mlx90394 sensor function);
+FINSH_FUNCTION_EXPORT(mlx90396, mlx90396 sensor function);
 #endif
 
 #ifdef FINSH_USING_MSH
-    MSH_CMD_EXPORT(mlx90394, mlx90394 sensor function);
+MSH_CMD_EXPORT(mlx90396, mlx90396 sensor function);
 #endif
