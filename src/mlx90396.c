@@ -566,23 +566,6 @@ static rt_err_t mlx90394_get_stat1(struct mlx90396_device *dev, union mlx90394_s
     return res;
 }
 
-static rt_err_t mlx90394_get_stat2(struct mlx90396_device *dev, union mlx90394_stat2 *stat2)
-{
-    rt_err_t res = RT_EOK;
-
-    res = mlx90394_mem_read(dev, MLX90394_ADDR_STAT2, (rt_uint8_t *)stat2, 1);
-    if (res != RT_EOK)
-    {
-        LOG_E("error\r\n");
-    }
-    else
-    {
-        LOG_D("STAT2 = 0x%x\r\n", stat2->byte_val);
-    }
-
-    return res;
-}
-
 rt_err_t mlx90394_get_ctrl1(struct mlx90396_device *dev, mlx90394_ctrl1_t *ctrl1)
 {
     rt_err_t res = RT_EOK;
@@ -1104,37 +1087,6 @@ rt_err_t mlx90394_get_xyz(struct mlx90396_device *dev, struct mlx90394_xyz *xyz)
         xyz->x = recv_buf[1]<<8 | recv_buf[0];
         xyz->y = recv_buf[3]<<8 | recv_buf[2];
         xyz->z = recv_buf[5]<<8 | recv_buf[4];
-    }
-
-    return res;
-}
-
-static rt_err_t mlx90394_get_sensitivity(struct mlx90396_device *dev, float *sensitivity)
-{
-    rt_err_t res = RT_EOK;
-    rt_uint8_t range;
-
-    res = mlx90394_get_range(dev, &range);
-    if (res != RT_EOK)
-    {
-        LOG_E("read RANGE failed\r\n");
-        return res;
-    }
-
-    switch (range)
-    {
-    case LOW_CURRENT_HIGH_RANGE:
-        *sensitivity = 1.5;
-        break;
-    case LOW_NOISE_HIGH_RANGE:
-        *sensitivity = 1.5;
-        break;
-    case LOW_NOISE_HIGH_SENSITIVITY:
-        *sensitivity = 0.15;
-        break;
-    default:
-        LOG_E("unkonwn magnetic sensor measurement range\r\n");
-        break;
     }
 
     return res;
