@@ -135,16 +135,12 @@ static rt_err_t mlx90396_control(struct rt_sensor_device *sensor, int cmd, void 
         result = mlx90396_get_info(sensor);
         break;
     case RT_SENSOR_CTRL_USER_CMD_XONOFF:
-        result = mlx90394_set_xonoff(mlx_dev, *(rt_uint16_t *)args & 0xff);
         break;
     case RT_SENSOR_CTRL_USER_CMD_YONOFF:
-        result = mlx90394_set_yonoff(mlx_dev, *(rt_uint16_t *)args & 0xff);
         break;
     case RT_SENSOR_CTRL_USER_CMD_ZONOFF:
-        result = mlx90394_set_zonoff(mlx_dev, *(rt_uint16_t *)args & 0xff);
         break;
     case RT_SENSOR_CTRL_USER_CMD_TONOFF:
-        result = mlx90394_set_tonoff(mlx_dev, *(rt_uint16_t *)args & 0xff);
         break;
     case RT_SENSOR_CTRL_USER_CMD_SET_MODE:
         result = mlx90394_set_mode(mlx_dev, *(rt_uint16_t *)args & 0xff);

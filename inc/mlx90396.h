@@ -391,11 +391,6 @@ rt_err_t mlx90394_get_ctrl2(struct mlx90396_device *dev, mlx90394_ctrl2_t *ctrl2
 rt_err_t mlx90394_get_ctrl3(struct mlx90396_device *dev, mlx90394_ctrl3_t *ctrl3);
 rt_err_t mlx90394_get_ctrl4(struct mlx90396_device *dev, mlx90394_ctrl4_t *ctrl4);
 
-rt_err_t mlx90394_set_xonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_yonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_zonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
-rt_err_t mlx90394_set_tonoff(struct mlx90396_device *dev, rt_uint8_t onoff);
-
 rt_err_t mlx90394_get_mode(struct mlx90396_device *dev, rt_uint8_t *mode);
 rt_err_t mlx90394_set_mode(struct mlx90396_device *dev, enum mlx90394_mode application_mode);
 rt_err_t mlx90394_get_range(struct mlx90396_device *dev, rt_uint8_t *range);
